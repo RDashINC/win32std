@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.9.0" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
+ <name>win32std</name>
+ <channel>pecl.php.net</channel>
+ <summary>Access to some Win32 usefull API.</summary>
+ <description>Contains:
+- RES (access to resource of .exe/.dll files on Win32)
+- RES stream wrapper for reading. Compatible with the res protocol defined by MS
+- REGISTRY access 
+- Common Win32 dialogs (open/save file, open dir, message boxes)
+- Wrapper for some standard function (win_shell_execute, win_play_wav, win_beep, win_create_link)
+ </description>
+ <lead>
+  <name>Eric Colinet</name>
+  <user>ecolinet</user>
+  <email>e.colinet@laposte.net</email>
+  <active>yes</active>
+ </lead>
+ <developer>
+  <name>Frank M. Kromann</name>
+  <user>fmk</user>
+  <email>frank@kromann.info</email>
+  <active>yes</active>
+ </developer>
+ <date>2009-11-05</date>
+ <time>12:09:02</time>
+ <version>
+  <release>1.0</release>
+  <api>1.0</api>
+ </version>
+ <stability>
+  <release>beta</release>
+  <api>beta</api>
+ </stability>
+ <license uri="http://www.php.net/license">PHP</license>
+ <notes>
+First release
+ </notes>
+ <contents>
+  <dir name="/">
+   <dir name="examples">
+    <file baseinstalldir="/" name="win32std.php" role="doc" />
+   </dir> <!-- //examples -->
+   <file name="cpp_wrappers.cpp" role="src" />
+   <file name="CREDITS" role="doc" />
+   <file name="php_win32std.h" role="src" />
+   <file name="README" role="doc" />
+   <file name="registry.c" role="src" />
+   <file name="res.c" role="src" />
+   <file name="res_stream.c" role="src" />
+   <file name="win32std.c" role="src" />
+   <file name="win32std.dsp" role="src" />
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>4.0.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0b1</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <providesextension>win32std</providesextension>
+ <extsrcrelease />
+</package>
