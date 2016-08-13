@@ -55,7 +55,7 @@ typedef struct _registry_hkey {
 	HKEY hKey;
 } registry_hkey;
 
-void php_hkey_close(zend_rsrc_list_entry *rsrc TSRMLS_DC);
+void php_hkey_close(zend_resource *rsrc TSRMLS_DC);
 
 #define WIN32_STRERROR_BUFFER_LEN 256
 const char * win32_strerror( char * buffer, long buffer_len);
@@ -82,7 +82,7 @@ PHP_FUNCTION(res_set);
 php_stream *php_res_stream_open(php_stream_wrapper *wrapper, char *path, char *mode, int options, char **opened_path, php_stream_context *context STREAMS_DC TSRMLS_DC);
 extern php_stream_ops php_res_stream_ops;
 extern php_stream_wrapper php_res_stream_wrapper;
-void _php_res_destruction_handler(zend_rsrc_list_entry *rsrc TSRMLS_DC);
+void _php_res_destruction_handler(zend_resource *rsrc TSRMLS_DC);
 
 
  /* Win32 wrapper functions   */
