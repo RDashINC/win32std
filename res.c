@@ -28,7 +28,7 @@
 /* static */ int le_res_resource;
 
 
-void _php_res_destruction_handler(zend_rsrc_list_entry *rsrc TSRMLS_DC) {
+void _php_res_destruction_handler(zend_resource *rsrc TSRMLS_DC) {
     HMODULE module = (HMODULE) rsrc->ptr;
     if( module )
 		FreeLibrary(module);
@@ -59,7 +59,7 @@ PHP_FUNCTION(res_open)
 	    }
     }
 
-    ZEND_REGISTER_RESOURCE( return_value, h_module, le_res_resource );
+    RETURN_RES(zend_register_resource(h_module, le_res_resource ));
 }
 /* }}} */
 
@@ -75,9 +75,9 @@ PHP_FUNCTION(res_close)
 	if( zend_parse_parameters( ZEND_NUM_ARGS() TSRMLS_CC, "r", &res_rc ) == FAILURE ) 
 		RETURN_FALSE
     
-    ZEND_FETCH_RESOURCE(h, HMODULE, &res_rc, -1, le_res_resource_name, le_res_resource);
+    zend_fetch_resource2_ex(h, &res_rc, -1, le_res_resource_name, le_res_resource);
 
-    zend_list_delete(Z_RESVAL_P(res_rc));
+    zend_list_delete(Z_RES_P(res_rc));
 
 	RETURN_TRUE;
 }
@@ -108,7 +108,7 @@ PHP_FUNCTION(res_get)
         RETURN_NULL();
     }
 
-    ZEND_FETCH_RESOURCE(h_module, HMODULE, &res_rc, -1, le_res_resource_name, le_res_resource);
+	zend_fetch_resource2_ex(h_module, &res_rc, -1, le_res_resource_name, le_res_resource);
 
     // Convert name and type to uppercase since lowercase don't work
     strupr(name);
@@ -248,7 +248,7 @@ PHP_FUNCTION(res_list)
 
 	if( zend_parse_parameters( ZEND_NUM_ARGS() TSRMLS_CC, "rs", &res_rc, &type, &type_len ) == FAILURE ) 
 		RETURN_FALSE;
-    ZEND_FETCH_RESOURCE(h_module, HMODULE, &res_rc, -1, le_res_resource_name, le_res_resource);
+    zend_fetch_resource2_ex(h_module, &res_rc, -1, le_res_resource_name, le_res_resource);
 
 	if( !type || !type[0] ) RETURN_FALSE;
 	if( *type=='#' )
@@ -359,7 +359,7 @@ PHP_FUNCTION(res_list_type)
 
 	if( zend_parse_parameters( ZEND_NUM_ARGS() TSRMLS_CC, "r|b", &res_rc, &as_string ) == FAILURE ) 
 		RETURN_FALSE;
-    ZEND_FETCH_RESOURCE(h_module, HMODULE, &res_rc, -1, le_res_resource_name, le_res_resource);
+    zend_fetch_resource2_ex(h_module, &res_rc, -1, le_res_resource_name, le_res_resource);
 
 	if( !array_init( return_value ) ) {
 		if( !as_string )

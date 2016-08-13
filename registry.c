@@ -30,7 +30,7 @@
 /*static*/ int le_key;
 
 
-void php_hkey_close(zend_rsrc_list_entry *rsrc TSRMLS_DC)
+void php_hkey_close(zend_resource *rsrc TSRMLS_DC)
 {
 	registry_hkey *hKey = (registry_hkey *)rsrc->ptr;
 
@@ -38,11 +38,11 @@ void php_hkey_close(zend_rsrc_list_entry *rsrc TSRMLS_DC)
 	efree(hKey);
 }
 
-static HKEY _registry_get_hkey(zval **zhKey TSRMLS_DC) {
+static HKEY _registry_get_hkey(zval *zhKey TSRMLS_DC) {
 	HKEY hKey;
-	switch (Z_TYPE_PP(zhKey)) {
+	switch (Z_TYPE_P(zhKey)) {
 		case IS_LONG :
-			switch (Z_LVAL_PP(zhKey)) {
+			switch (Z_LVAL_P(zhKey)) {
 				case 0 :
 					hKey = HKEY_CLASSES_ROOT;
 					break;
@@ -64,7 +64,7 @@ static HKEY _registry_get_hkey(zval **zhKey TSRMLS_DC) {
 			{
 				registry_hkey *open_hkey;
 
-				open_hkey = (registry_hkey *) zend_fetch_resource(zhKey TSRMLS_CC, -1, le_key_resource_name, NULL, 1, le_key);
+				open_hkey = (registry_hkey *) zend_fetch_resource2(zhKey TSRMLS_CC, -1, le_key_resource_name, NULL, 1, le_key);
 				if (open_hkey)
 					hKey = open_hkey->hKey;
 				else
@@ -90,9 +90,9 @@ PHP_FUNCTION(reg_close_key)
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &zhKey) == FAILURE) {
 		return;
 	}
-	ZEND_FETCH_RESOURCE(reg_hkey, registry_hkey *, &zhKey, -1, le_key_resource_name, le_key);
+	zend_fetch_resource(reg_hkey, &zhKey, -1, le_key_resource_name, le_key);
 
-	zend_list_delete(Z_RESVAL_P(zhKey));
+	zend_list_delete(Z_RES_P(zhKey));
 }
 /* }}} */
 
@@ -130,7 +130,7 @@ PHP_FUNCTION(reg_create_key)
 	else {
 		reg_hkey = (registry_hkey *) emalloc(sizeof(registry_hkey));
 		reg_hkey->hKey = hkResult;
-		ZEND_REGISTER_RESOURCE(return_value, reg_hkey, le_key);
+		RETURN_RES(zend_register_resource(reg_hkey, le_key));
 	}
 }
 /* }}} */
@@ -249,7 +249,7 @@ PHP_FUNCTION(reg_open_key)
 	else {
 		reg_hkey = (registry_hkey *) emalloc(sizeof(registry_hkey));
 		reg_hkey->hKey = hkResult;
-		ZEND_REGISTER_RESOURCE(return_value, reg_hkey, le_key);
+		RETURN_RES(zend_register_resource(reg_hkey, le_key));
 	}
 }
 /* }}} */

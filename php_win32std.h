@@ -25,6 +25,7 @@
 #include "php_ini.h"
 #include "zend_list.h"
 #include "ext/standard/info.h"
+#include "ext/standard/php_smart_string.h"
 
 
 extern zend_module_entry win32std_module_entry;

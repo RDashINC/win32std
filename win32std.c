@@ -23,7 +23,7 @@
 #endif
 
 #include "php_win32std.h"
-#include "ext/standard/php_smart_str.h"
+#include "ext/standard/php_smart_string.h"
 
 #include <mmsystem.h>
 #include <commdlg.h>
@@ -256,7 +256,7 @@ PHP_FUNCTION(win_browse_file)
     OPENFILENAME ofn;
     BOOL res;
  	HashPosition pos;
-	smart_str smart_filter= {0};
+	smart_string smart_filter= {0};
   
     if( zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|lsssz", &open,
         &path, &path_len, &file, &file_len, &ext, &ext_len, &zfilter) == FAILURE )
@@ -285,24 +285,24 @@ PHP_FUNCTION(win_browse_file)
 		zend_hash_internal_pointer_reset_ex(Z_ARRVAL_P(zfilter), &pos);
 		while (zend_hash_get_current_data_ex(Z_ARRVAL_P(zfilter), (void **)&entry, &pos) == SUCCESS) {
 			if( zend_hash_get_current_key_ex(Z_ARRVAL_P(zfilter), &key, &key_len, &key_len, 0, &pos)!=HASH_KEY_IS_STRING ) { not_string= 1; break; }
-			if( Z_TYPE_PP(entry)!=IS_STRING ) { /*not_string= 1;*/ 
+			if( Z_TYPE_P(entry) != IS_STRING ) { /*not_string= 1;*/ 
 				zend_error( E_WARNING, "win_browse_file: filter key '%s' must have a string value", key ); 
 				zend_hash_move_forward_ex(Z_ARRVAL_P(zfilter), &pos);
 				continue; 
 			}
 
-			smart_str_appends( &smart_filter, key );
-			smart_str_appendc( &smart_filter, '\0' );
-			smart_str_appends( &smart_filter, Z_STRVAL_PP(entry) );
-			smart_str_appendc( &smart_filter, '\0' );
+			smart_string_appends( &smart_filter, key );
+			smart_string_appendc( &smart_filter, '\0' );
+			// smart_string_appends( &smart_filter, Z_STRVAL_P(entry) ); not applicable?
+			smart_string_appendc( &smart_filter, '\0' );
 
 			zend_hash_move_forward_ex(Z_ARRVAL_P(zfilter), &pos);
 		}
 		if(not_string ) {
 			zend_error( E_WARNING, "win_browse_file: filter must be an associative array" );
-			smart_str_free(&smart_filter);
+			smart_string_free(&smart_filter);
 		}
-		smart_str_appendc( &smart_filter, '\0' );
+		smart_string_appendc( &smart_filter, '\0' );
 		ofn.lpstrFilter= smart_filter.c;
 		free_filter= 1;
 	} 
@@ -319,7 +319,7 @@ PHP_FUNCTION(win_browse_file)
     else
         res= GetSaveFileName(&ofn);
 	if( free_filter )
-		smart_str_free(&smart_filter);
+		smart_string_free(&smart_filter);
 	if (!res) {
 		RETURN_NULL();
 	}
